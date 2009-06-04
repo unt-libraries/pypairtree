@@ -1,5 +1,7 @@
 import os
 
+sanitizerNum = 0x7d
+
 def findObjects(path):
     """
     given a path that corresponds to a pairtree, walk it and look for 
@@ -72,7 +74,8 @@ def deSanitizeString(name):
     # reverse ascii 0-32 stuff
     # must subtract number added at sanitization
     for x in xrange(0, 33):
-        oldString = oldString.replace(hex(x + 0x7d).replace('0x', '^'), chr(x))
+        oldString = oldString.replace( \
+            hex(x + sanitizerNum).replace('0x', '^'), chr(x))
     # second pass
     replaceTable = [
      ('"', '^22'),
@@ -124,7 +127,8 @@ def sanitizeString(name):
         # conflict example: is ^x1e supposed to be ^x1 (ascii 1) followed by  
         # letter 'e' or really ^x1e (ascii 30)
         #newString = newString.replace(chr(x), hex(x).replace('0x','^'))
-        newString = newString.replace(chr(x), hex(x+0x7d).replace('0x','^'))
+        newString = newString.replace( \
+            chr(x), hex(x+sanitizerNum).replace('0x','^'))
     #/ -> =
     #: -> +
     #. -> ,
