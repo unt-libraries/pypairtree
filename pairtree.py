@@ -54,6 +54,43 @@ def pair_tree_creator(meta_id):
         return os.sep + os.sep.join(chunks) + os.sep
 
 
+def deSanitizeString(name):
+    """Reverses sanitization process.
+
+    Reverses changes made to a string that has been sanitized for use 
+    as a pairtree identifier.
+    """
+    oldString = name
+    # first pass
+    replaceTable2 = [
+        ("/", "="),
+        (":", "+"),
+        (".", ","),
+    ]
+    for r in replaceTable2:
+        oldString = oldString.replace(r[1], r[0])
+    # reverse ascii 0-32 stuff
+    # must subtract number added at sanitization
+    for x in xrange(0, 33):
+        oldString = oldString.replace(hex(x + 0x7d).replace('0x', '^'), chr(x))
+    # second pass
+    replaceTable = [
+     ('"', '^22'),
+     ('<', '^3c'),
+     ('?', '^3f'),
+     ('*', '^2a'),
+     ('=', '^3d'),
+     ('+', '^2b'),
+     ('>', '^3e'),
+     ('|', '^7c'),
+     (',', '^2c'),
+     ('^', '^5e'), 
+    ]
+    for r in replaceTable:
+        oldString = oldString.replace(r[1], r[0])
+    return oldString
+
+
 def sanitizeString(name):
     """'clean' a string in preparation for splitting for use as a pairtree
     identifier"""
@@ -81,11 +118,13 @@ def sanitizeString(name):
     
     for r in replaceTable:
         newString = newString.replace(r[0], r[1])
-        
     #replace ascii 0-32
     for x in xrange(0, 33):
-        newString = newString.replace(chr(x), hex(x).replace('0x','^'))
-        
+        # must add somewhat arbitrary num to avoid conflict at deSanitization
+        # conflict example: is ^x1e supposed to be ^x1 (ascii 1) followed by  
+        # letter 'e' or really ^x1e (ascii 30)
+        #newString = newString.replace(chr(x), hex(x).replace('0x','^'))
+        newString = newString.replace(chr(x), hex(x+0x7d).replace('0x','^'))
     #/ -> =
     #: -> +
     #. -> ,
