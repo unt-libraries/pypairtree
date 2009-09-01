@@ -163,7 +163,7 @@ def toPairTreePath(name):
     
     return os.sep.join(chunks) + os.sep
 
-def create_paired_dir(output_dir, meta_id, static=False):
+def create_paired_dir(output_dir, meta_id, static=False, needwebdir=True):
     """ Creates the meta or static dirs
          adds and "even" or "odd" subdirectory to the static path
          based on the meta-id
@@ -173,7 +173,10 @@ def create_paired_dir(output_dir, meta_id, static=False):
     #If it's a static directory, add even and odd
     if static:
         #Determine whether meta-id is odd or even
-        last_character = int(meta_id[-1])
+        if meta_id[-1].isdigit():
+            last_character = int(meta_id[-1])
+        else:
+            last_character = ord(meta_id[-1])
         if last_character % 2 == 0:
             num_dir = 'even'
         else:
@@ -193,13 +196,13 @@ def create_paired_dir(output_dir, meta_id, static=False):
     #Create the meta-id directory
     os.mkdir(meta_dir)
     #if we are creating static output
-    if static:
+    if static and needwebdir:
         #add the web path to the output directory
         os.mkdir(os.path.join(meta_dir,'web'))
         static_dir = os.path.join(meta_dir,'web')
         #return the static-web path
         return static_dir
-    #if we are creating meta output
+    #if we are creating meta output or don't need web directory
     else:
         #return the meta path
         return meta_dir
