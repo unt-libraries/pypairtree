@@ -162,4 +162,61 @@ def toPairTreePath(name):
         chunks.append(chunk)
     
     return os.sep.join(chunks) + os.sep
-        
+
+def create_paired_dir(output_dir, meta_id, static=False):
+    """ Creates the meta or static dirs
+         adds and "even" or "odd" subdirectory to the static path
+         based on the meta-id
+    """
+    #get the absolute root path
+    root_path = os.path.abspath(output_dir)
+    #If it's a static directory, add even and odd
+    if static:
+        #Determine whether meta-id is odd or even
+        last_character = int(meta_id[-1])
+        if last_character % 2 == 0:
+            num_dir = 'even'
+        else:
+            num_dir = 'odd'
+        #Add odd or even to the path, based on the meta-id
+        output_path = os.path.join(root_path, num_dir)
+    #if it's a meta directory, output as normal
+    else:
+        output_path = root_path
+    #if it doesn't already exist, create the output path (includes even/odd)
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
+    #Add the pairtree to the output path
+    path_name = add_to_pairtree(output_path, meta_id)
+    #Add the meta-id directory to the end of the pairpath
+    meta_dir = os.path.join(path_name, meta_id)
+    #Create the meta-id directory
+    os.mkdir(meta_dir)
+    #if we are creating static output
+    if static:
+        #add the web path to the output directory
+        os.mkdir(os.path.join(meta_dir,'web'))
+        static_dir = os.path.join(meta_dir,'web')
+        #return the static-web path
+        return static_dir
+    #if we are creating meta output
+    else:
+        #return the meta path
+        return meta_dir
+
+def add_to_pairtree(output_path, meta_id):
+    """ Creates pair tree directory structure within pair tree for new element """
+    #Create the pair path
+    paired_path = pair_tree_creator(meta_id)
+    path_append = ''
+    #For each directory in the pair path
+    for pair_dir in paired_path.split(os.sep):
+        #Append the pair path together, one directory at a time
+        path_append = os.path.join(path_append, pair_dir)
+        #Append the pair path to the output path
+        combined_path = os.path.join(output_path, path_append)
+        #if the path doesn't already exist, create it
+        if not os.path.exists(combined_path):
+            os.mkdir(combined_path)
+
+    return combined_path
