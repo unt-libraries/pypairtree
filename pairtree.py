@@ -2,14 +2,15 @@ import os
 
 sanitizerNum = 0x7d
 
+
 def findObjects(path):
     """
-    given a path that corresponds to a pairtree, walk it and look for 
+    given a path that corresponds to a pairtree, walk it and look for
     non-shorty (it's ya birthday) directories
     """
-    objects = [ ]
+    objects = []
     if not os.path.isdir(path):
-        return [ ]
+        return []
     contents = os.listdir(path)
     for item in contents:
         fullPath = os.path.join(path, item)
@@ -18,20 +19,20 @@ def findObjects(path):
             #we might want to consider a normalize option
             return [path]
         else:
-            if isShorty(item):        
+            if isShorty(item):
                 objects = objects + findObjects(fullPath)
             else:
                 objects.append(fullPath)
     return objects
-    
+
 
 def get_pair_path(meta_id):
     """ Determine the pair path for the digital object """
-    
+
     #Create the pair path from the meta-id
     pair_tree = pair_tree_creator(meta_id)
     pair_path = os.path.join(pair_tree, meta_id)
-    
+
     return pair_path
 
 
@@ -50,16 +51,16 @@ def pair_tree_creator(meta_id):
             if (len(meta_id) - 1) == x:
                 chunk = meta_id[x]
             else:
-                chunk = meta_id[x:x+2]
+                chunk = meta_id[x: x + 2]
             chunks.append(chunk)
-    
+
         return os.sep + os.sep.join(chunks) + os.sep
 
 
 def deSanitizeString(name):
     """Reverses sanitization process.
 
-    Reverses changes made to a string that has been sanitized for use 
+    Reverses changes made to a string that has been sanitized for use
     as a pairtree identifier.
     """
     oldString = name
@@ -74,21 +75,21 @@ def deSanitizeString(name):
     # reverse ascii 0-32 stuff
     # must subtract number added at sanitization
     for x in xrange(0, 33):
-        oldString = oldString.replace( \
+        oldString = oldString.replace(
             hex(x + sanitizerNum).replace('0x', '^'), chr(x))
     # second pass
     replaceTable = [
-     ('"', '^22'),
-     ('<', '^3c'),
-     ('?', '^3f'),
-     ('*', '^2a'),
-     ('=', '^3d'),
-     ('+', '^2b'),
-     ('>', '^3e'),
-     ('|', '^7c'),
-     (',', '^2c'),
-     ('^', '^5e'), 
-    ]
+        ('"', '^22'),
+        ('<', '^3c'),
+        ('?', '^3f'),
+        ('*', '^2a'),
+        ('=', '^3d'),
+        ('+', '^2b'),
+        ('>', '^3e'),
+        ('|', '^7c'),
+        (',', '^2c'),
+        ('^', '^5e'), ]
+
     for r in replaceTable:
         oldString = oldString.replace(r[1], r[0])
     return oldString
@@ -98,37 +99,35 @@ def sanitizeString(name):
     """'clean' a string in preparation for splitting for use as a pairtree
     identifier"""
     newString = name
-    
+
     #string cleaning, pass 1
     replaceTable = [
-     ('^', '^5e'), #we need to do this one first
-     ('"', '^22'),
-     ('<', '^3c'),
-     ('?', '^3f'),
-     ('*', '^2a'),
-     ('=', '^3d'),
-     ('+', '^2b'),
-     ('>', '^3e'),
-     ('|', '^7c'),
-     (',', '^2c'),
-    ]
-    
-    
+        ('^', '^5e'),  # we need to do this one first
+        ('"', '^22'),
+        ('<', '^3c'),
+        ('?', '^3f'),
+        ('*', '^2a'),
+        ('=', '^3d'),
+        ('+', '^2b'),
+        ('>', '^3e'),
+        ('|', '^7c'),
+        (',', '^2c'), ]
+
     #   "   hex 22           <   hex 3c           ?   hex 3f
     #   *   hex 2a           =   hex 3d           ^   hex 5e
     #   +   hex 2b           >   hex 3e           |   hex 7c
     #   ,   hex 2c
-    
+
     for r in replaceTable:
         newString = newString.replace(r[0], r[1])
     #replace ascii 0-32
     for x in xrange(0, 33):
         # must add somewhat arbitrary num to avoid conflict at deSanitization
-        # conflict example: is ^x1e supposed to be ^x1 (ascii 1) followed by  
+        # conflict example: is ^x1e supposed to be ^x1 (ascii 1) followed by
         # letter 'e' or really ^x1e (ascii 30)
         #newString = newString.replace(chr(x), hex(x).replace('0x','^'))
-        newString = newString.replace( \
-            chr(x), hex(x+sanitizerNum).replace('0x','^'))
+        newString = newString.replace(
+            chr(x), hex(x + sanitizerNum).replace('0x', '^'))
     #/ -> =
     #: -> +
     #. -> ,
@@ -136,32 +135,33 @@ def sanitizeString(name):
     replaceTable2 = [
         ("/", "="),
         (":", "+"),
-        (".", ","),
-    ]
-    
+        (".", ","), ]
+
     #string cleaning pass 2
-    
+
     for r in replaceTable2:
         newString = newString.replace(r[0], r[1])
-        
+
     return newString
 
 
 def toPairTreePath(name):
     """clean a string, and then split it into a pairtree path"""
+
     sName = sanitizeString(name)
     print "sName is %s" % sName
-    chunks = [ ]
+    chunks = []
     for x in xrange(0, len(sName)):
         if x % 2:
             continue
         if (len(sName) - 1) == x:
             chunk = sName[x]
         else:
-            chunk = sName[x:x+2]
+            chunk = sName[x: x + 2]
         chunks.append(chunk)
-    
+
     return os.sep.join(chunks) + os.sep
+
 
 def create_paired_dir(output_dir, meta_id, static=False, needwebdir=True):
     """ Creates the meta or static dirs
@@ -198,8 +198,8 @@ def create_paired_dir(output_dir, meta_id, static=False, needwebdir=True):
     #if we are creating static output
     if static and needwebdir:
         #add the web path to the output directory
-        os.mkdir(os.path.join(meta_dir,'web'))
-        static_dir = os.path.join(meta_dir,'web')
+        os.mkdir(os.path.join(meta_dir, 'web'))
+        static_dir = os.path.join(meta_dir, 'web')
         #return the static-web path
         return static_dir
     #if we are creating meta output or don't need web directory
@@ -207,8 +207,9 @@ def create_paired_dir(output_dir, meta_id, static=False, needwebdir=True):
         #return the meta path
         return meta_dir
 
+
 def add_to_pairtree(output_path, meta_id):
-    """ Creates pair tree directory structure within pair tree for new element """
+    """Creates pair tree dir structure within pair tree for new element"""
     #Create the pair path
     paired_path = pair_tree_creator(meta_id)
     path_append = ''
