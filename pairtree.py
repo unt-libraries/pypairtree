@@ -149,7 +149,7 @@ def toPairTreePath(name):
     """clean a string, and then split it into a pairtree path"""
 
     sName = sanitizeString(name)
-    print "sName is %s" % sName
+    # print "sName is %s" % sName
     chunks = []
     for x in xrange(0, len(sName)):
         if x % 2:
