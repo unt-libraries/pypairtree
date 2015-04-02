@@ -1,9 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import sys
 import os
-import pairtree
+
 from optparse import OptionParser
+
+from pypairtree import pairtree
 
 
 def listIDs(basedir):
