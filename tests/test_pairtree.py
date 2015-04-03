@@ -12,6 +12,9 @@ from pypairtree import pairtree
 TEST_DIR = os.path.dirname(__file__)
 
 
+STATIC_DIR = os.path.join(TEST_DIR, 'static')
+
+
 @pytest.mark.parametrize('expected', [
     'co/da/pa/+/codapa+',
     'co/da/pa/codapa',
@@ -77,17 +80,89 @@ def test_toPairTreePath():
     assert path == 'co/da/^2/22/^3/c^/2b/=^/2c/^7/c/'
 
 
-def test_create_paired_dir():
+def test_create_paired_dir_even():
     """Checks for even directory created."""
-    static_dir = os.path.join(TEST_DIR, 'static')
-    os.mkdir(static_dir)
+    os.mkdir(STATIC_DIR)
     try:
-        new_path = pairtree.create_paired_dir(static_dir,
+        new_path = pairtree.create_paired_dir(STATIC_DIR,
                                               'coda246',
                                               static=True,
                                               needwebdir=False)
-        assert new_path == os.path.join(static_dir, 'even/co/da/24/6/coda246')
+        assert new_path == os.path.join(STATIC_DIR, 'even/co/da/24/6/coda246')
         assert os.path.isdir(new_path)
     finally:
         # make sure we delete the directory created
-        rmtree(static_dir)
+        rmtree(STATIC_DIR)
+
+
+def test_create_paired_dir_odd():
+    """Checks for odd directory created."""
+    os.mkdir(STATIC_DIR)
+    try:
+        new_path = pairtree.create_paired_dir(STATIC_DIR,
+                                              'coda24a',
+                                              static=True,
+                                              needwebdir=False)
+        assert new_path == os.path.join(STATIC_DIR, 'odd/co/da/24/a/coda24a')
+        assert os.path.isdir(new_path)
+    finally:
+        rmtree(STATIC_DIR)
+
+
+def test_create_paired_dir_web():
+    """Checks for web directory created."""
+    os.mkdir(STATIC_DIR)
+    try:
+        new_path = pairtree.create_paired_dir(STATIC_DIR,
+                                              'coda242',
+                                              static=True,
+                                              needwebdir=True)
+        assert new_path == os.path.join(STATIC_DIR,
+                                        'even/co/da/24/2/coda242/web')
+        assert os.path.isdir(new_path)
+    finally:
+        rmtree(STATIC_DIR)
+
+
+def test_create_paired_dir_meta():
+    """Checks regular directory is created in a meta directory."""
+    meta_dir = os.path.join(TEST_DIR, 'meta')
+    os.mkdir(meta_dir)
+    try:
+        new_path = pairtree.create_paired_dir(meta_dir,
+                                              'coda24a',
+                                              static=False,
+                                              needwebdir=False)
+        assert new_path == os.path.join(meta_dir, 'co/da/24/a/coda24a')
+        assert os.path.isdir(new_path)
+    finally:
+        rmtree(meta_dir)
+
+
+def test_add_to_pairtree_all_new():
+    """Checks directories are created when all pieces are new."""
+    os.mkdir(STATIC_DIR)
+    try:
+        new_path = pairtree.add_to_pairtree(STATIC_DIR, 'coda253ba')
+        assert new_path == os.path.join(STATIC_DIR, 'co/da/25/3b/a/')
+        assert os.path.isdir(new_path)
+    finally:
+        rmtree(STATIC_DIR)
+
+
+def test_add_to_pairtree_some_exist():
+    """Checks directories are created when some pieces already exist."""
+    os.makedirs(os.path.join(STATIC_DIR, 'co/da'))
+    try:
+        new_path = pairtree.add_to_pairtree(STATIC_DIR, 'coda253ba')
+        assert new_path == os.path.join(STATIC_DIR, 'co/da/25/3b/a/')
+        assert os.path.isdir(new_path)
+    finally:
+        rmtree(STATIC_DIR)
+
+
+def test_get_pairtree_prefix():
+    """Checks for correct string from file."""
+    store_dir = os.path.join(TEST_DIR, 'store/')
+    prefix = pairtree.get_pairtree_prefix(store_dir)
+    assert prefix == 'ark:/67531/'
