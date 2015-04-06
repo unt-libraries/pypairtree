@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Provides a function to print object identifiers in a Pairtree.
+
+__main__ function allows this to be run from the commandline.
+"""
+
 import sys
 import os
 
@@ -11,16 +16,16 @@ from pypairtree import pairtree
 def listIDs(basedir):
     """Lists digital object identifiers of Pairtree directory structure.
 
-    Walks a Pairtree directory structure to get IDs. Prepends prefix found in 
+    Walks a Pairtree directory structure to get IDs. Prepends prefix found in
     pairtree_prefix file. Outputs to standard output.
     """
-    prefix = ""
+    prefix = ''
     # check for pairtree_prefix file
     prefixfile = os.path.join(basedir, 'pairtree_prefix')
     if os.path.isfile(prefixfile):
         rff = open(prefixfile, 'r')
         prefix = rff.readline().strip()
-        rff.close() 
+        rff.close()
     # check for pairtree_root dir
     root = os.path.join(basedir, 'pairtree_root')
     if os.path.isdir(root):
@@ -33,8 +38,8 @@ def listIDs(basedir):
         print 'pairtree_root directory not found'
 
 
-if __name__ == "__main__":
-    usage = "usage: %prog [options] <pairtreedir>"
+if __name__ == '__main__':
+    usage = 'usage: %prog [options] <pairtreedir>'
     parser = OptionParser(usage)
     (options, args) = parser.parse_args()
     if len(args) != 1:
