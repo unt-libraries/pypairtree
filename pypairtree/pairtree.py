@@ -1,12 +1,21 @@
+"""Functions for working with pairtrees.
+
+This module provides functions for creating, traversing, and
+working with Pairtree filesystem hierarchy structures.
+
+"""
+
 import os
+
 
 sanitizerNum = 0x7d
 
 
 def findObjects(path):
-    """
-    given a path that corresponds to a pairtree, walk it and look for
-    non-shorty (it's ya birthday) directories
+    """Find objects in pairtree.
+
+    Given a path that corresponds to a pairtree, walk it and look for
+    non-shorty (it's ya birthday) directories.
     """
     objects = []
     if not os.path.isdir(path):
@@ -15,8 +24,8 @@ def findObjects(path):
     for item in contents:
         fullPath = os.path.join(path, item)
         if not os.path.isdir(fullPath):
-            #deal with a split end at this point
-            #we might want to consider a normalize option
+            # deal with a split end at this point
+            # we might want to consider a normalize option
             return [path]
         else:
             if isShorty(item):
@@ -27,12 +36,9 @@ def findObjects(path):
 
 
 def get_pair_path(meta_id):
-    """ Determine the pair path for the digital object """
-
-    #Create the pair path from the meta-id
+    """determine the pair path for the digital object meta-id"""
     pair_tree = pair_tree_creator(meta_id)
     pair_path = os.path.join(pair_tree, meta_id)
-
     return pair_path
 
 
@@ -43,18 +49,17 @@ def isShorty(name):
 
 
 def pair_tree_creator(meta_id):
-        """split string into a pairtree path"""
-        chunks = []
-        for x in xrange(0, len(meta_id)):
-            if x % 2:
-                continue
-            if (len(meta_id) - 1) == x:
-                chunk = meta_id[x]
-            else:
-                chunk = meta_id[x: x + 2]
-            chunks.append(chunk)
-
-        return os.sep + os.sep.join(chunks) + os.sep
+    """split string into a pairtree path"""
+    chunks = []
+    for x in xrange(0, len(meta_id)):
+        if x % 2:
+            continue
+        if (len(meta_id) - 1) == x:
+            chunk = meta_id[x]
+        else:
+            chunk = meta_id[x: x + 2]
+        chunks.append(chunk)
+    return os.sep + os.sep.join(chunks) + os.sep
 
 
 def deSanitizeString(name):
@@ -88,7 +93,8 @@ def deSanitizeString(name):
         ('>', '^3e'),
         ('|', '^7c'),
         (',', '^2c'),
-        ('^', '^5e'), ]
+        ('^', '^5e'),
+    ]
 
     for r in replaceTable:
         oldString = oldString.replace(r[1], r[0])
@@ -99,8 +105,7 @@ def sanitizeString(name):
     """'clean' a string in preparation for splitting for use as a pairtree
     identifier"""
     newString = name
-
-    #string cleaning, pass 1
+    # string cleaning, pass 1
     replaceTable = [
         ('^', '^5e'),  # we need to do this one first
         ('"', '^22'),
@@ -111,7 +116,8 @@ def sanitizeString(name):
         ('+', '^2b'),
         ('>', '^3e'),
         ('|', '^7c'),
-        (',', '^2c'), ]
+        (',', '^2c'),
+    ]
 
     #   "   hex 22           <   hex 3c           ?   hex 3f
     #   *   hex 2a           =   hex 3d           ^   hex 5e
@@ -120,36 +126,33 @@ def sanitizeString(name):
 
     for r in replaceTable:
         newString = newString.replace(r[0], r[1])
-    #replace ascii 0-32
+    # replace ascii 0-32
     for x in xrange(0, 33):
         # must add somewhat arbitrary num to avoid conflict at deSanitization
         # conflict example: is ^x1e supposed to be ^x1 (ascii 1) followed by
         # letter 'e' or really ^x1e (ascii 30)
-        #newString = newString.replace(chr(x), hex(x).replace('0x','^'))
         newString = newString.replace(
             chr(x), hex(x + sanitizerNum).replace('0x', '^'))
-    #/ -> =
-    #: -> +
-    #. -> ,
 
     replaceTable2 = [
         ("/", "="),
         (":", "+"),
-        (".", ","), ]
+        (".", ","),
+    ]
 
-    #string cleaning pass 2
+    # / -> =
+    # : -> +
+    # . -> ,
 
+    # string cleaning pass 2
     for r in replaceTable2:
         newString = newString.replace(r[0], r[1])
-
     return newString
 
 
 def toPairTreePath(name):
     """clean a string, and then split it into a pairtree path"""
-
     sName = sanitizeString(name)
-    # print "sName is %s" % sName
     chunks = []
     for x in xrange(0, len(sName)):
         if x % 2:
@@ -159,20 +162,20 @@ def toPairTreePath(name):
         else:
             chunk = sName[x: x + 2]
         chunks.append(chunk)
-
     return os.sep.join(chunks) + os.sep
 
 
 def create_paired_dir(output_dir, meta_id, static=False, needwebdir=True):
-    """ Creates the meta or static dirs
-         adds and "even" or "odd" subdirectory to the static path
-         based on the meta-id
+    """Creates the meta or static dirs.
+
+    Adds an "even" or "odd" subdirectory to the static path
+    based on the meta-id.
     """
-    #get the absolute root path
+    # get the absolute root path
     root_path = os.path.abspath(output_dir)
-    #If it's a static directory, add even and odd
+    # if it's a static directory, add even and odd
     if static:
-        #Determine whether meta-id is odd or even
+        # determine whether meta-id is odd or even
         if meta_id[-1].isdigit():
             last_character = int(meta_id[-1])
         else:
@@ -181,53 +184,50 @@ def create_paired_dir(output_dir, meta_id, static=False, needwebdir=True):
             num_dir = 'even'
         else:
             num_dir = 'odd'
-        #Add odd or even to the path, based on the meta-id
+        # add odd or even to the path, based on the meta-id
         output_path = os.path.join(root_path, num_dir)
-    #if it's a meta directory, output as normal
+    # if it's a meta directory, output as normal
     else:
         output_path = root_path
-    #if it doesn't already exist, create the output path (includes even/odd)
+    # if it doesn't already exist, create the output path (includes even/odd)
     if not os.path.exists(output_path):
         os.mkdir(output_path)
-    #Add the pairtree to the output path
+    # add the pairtree to the output path
     path_name = add_to_pairtree(output_path, meta_id)
-    #Add the meta-id directory to the end of the pairpath
+    # add the meta-id directory to the end of the pairpath
     meta_dir = os.path.join(path_name, meta_id)
-    #Create the meta-id directory
     os.mkdir(meta_dir)
-    #if we are creating static output
+    # if we are creating static output
     if static and needwebdir:
-        #add the web path to the output directory
+        # add the web path to the output directory
         os.mkdir(os.path.join(meta_dir, 'web'))
         static_dir = os.path.join(meta_dir, 'web')
-        #return the static-web path
         return static_dir
-    #if we are creating meta output or don't need web directory
+    # else we are creating meta output or don't need web directory
     else:
-        #return the meta path
         return meta_dir
 
 
 def add_to_pairtree(output_path, meta_id):
-    """Creates pair tree dir structure within pair tree for new element"""
-    #Create the pair path
+    """creates pair tree dir structure within pair tree for new element"""
+    # create the pair path
     paired_path = pair_tree_creator(meta_id)
     path_append = ''
-    #For each directory in the pair path
+    # for each directory in the pair path
     for pair_dir in paired_path.split(os.sep):
-        #Append the pair path together, one directory at a time
+        # append the pair path together, one directory at a time
         path_append = os.path.join(path_append, pair_dir)
-        #Append the pair path to the output path
+        # append the pair path to the output path
         combined_path = os.path.join(output_path, path_append)
-        #if the path doesn't already exist, create it
+        # if the path doesn't already exist, create it
         if not os.path.exists(combined_path):
             os.mkdir(combined_path)
-
     return combined_path
 
+
 def get_pairtree_prefix(pairtree_store):
-    """Returns the prefix given in pairtree_prefix file."""
+    """returns the prefix given in pairtree_prefix file"""
     prefix_path = os.path.join(pairtree_store, 'pairtree_prefix')
     with open(prefix_path, 'r') as prefixf:
-       prefix = prefixf.read().strip()
+        prefix = prefixf.read().strip()
     return prefix
