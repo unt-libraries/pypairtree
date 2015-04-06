@@ -21,3 +21,10 @@ by a number of developers over the years including
 
 If you have questions about the project feel free to contact Mark Phillips
 at mark.phillips@unt.edu.
+
+## Tests
+
+Unit tests are provided. To run them via Tox, ensure you are in the
+pypairtree directory with the tox.ini file and execute:
+
+$ tox
