@@ -5,8 +5,8 @@
 __main__ function allows this to be run from the commandline.
 """
 
-import sys
 import os
+import sys
 
 from optparse import OptionParser
 
@@ -16,8 +16,8 @@ from pypairtree import pairtree
 def listIDs(basedir):
     """Lists digital object identifiers of Pairtree directory structure.
 
-    Walks a Pairtree directory structure to get IDs. Prepends prefix found in
-    pairtree_prefix file. Outputs to standard output.
+    Walks a Pairtree directory structure to get IDs. Prepends prefix
+    found in pairtree_prefix file. Outputs to standard output.
     """
     prefix = ''
     # check for pairtree_prefix file

@@ -12,7 +12,7 @@ sanitizerNum = 0x7d
 
 
 def findObjects(path):
-    """Find objects in pairtree.
+    """Finds objects in pairtree.
 
     Given a path that corresponds to a pairtree, walk it and look for
     non-shorty (it's ya birthday) directories.
@@ -36,20 +36,20 @@ def findObjects(path):
 
 
 def get_pair_path(meta_id):
-    """determine the pair path for the digital object meta-id"""
+    """Determines the pair path for the digital object meta-id."""
     pair_tree = pair_tree_creator(meta_id)
     pair_path = os.path.join(pair_tree, meta_id)
     return pair_path
 
 
 def isShorty(name):
-    """is it a valid shorty name?"""
+    """Checks if it is a valid shorty name."""
     nLen = len(name)
     return nLen == 1 or nLen == 2
 
 
 def pair_tree_creator(meta_id):
-    """split string into a pairtree path"""
+    """Splits string into a pairtree path."""
     chunks = []
     for x in xrange(0, len(meta_id)):
         if x % 2:
@@ -102,8 +102,8 @@ def deSanitizeString(name):
 
 
 def sanitizeString(name):
-    """'clean' a string in preparation for splitting for use as a pairtree
-    identifier"""
+    """Cleans string in preparation for splitting for use as a pairtree
+    identifier."""
     newString = name
     # string cleaning, pass 1
     replaceTable = [
@@ -151,7 +151,7 @@ def sanitizeString(name):
 
 
 def toPairTreePath(name):
-    """clean a string, and then split it into a pairtree path"""
+    """Cleans a string, and then splits it into a pairtree path."""
     sName = sanitizeString(name)
     chunks = []
     for x in xrange(0, len(sName)):
@@ -209,7 +209,8 @@ def create_paired_dir(output_dir, meta_id, static=False, needwebdir=True):
 
 
 def add_to_pairtree(output_path, meta_id):
-    """creates pair tree dir structure within pair tree for new element"""
+    """Creates pairtree dir structure within pairtree for new
+    element."""
     # create the pair path
     paired_path = pair_tree_creator(meta_id)
     path_append = ''
@@ -226,7 +227,7 @@ def add_to_pairtree(output_path, meta_id):
 
 
 def get_pairtree_prefix(pairtree_store):
-    """returns the prefix given in pairtree_prefix file"""
+    """Returns the prefix given in pairtree_prefix file."""
     prefix_path = os.path.join(pairtree_store, 'pairtree_prefix')
     with open(prefix_path, 'r') as prefixf:
         prefix = prefixf.read().strip()
