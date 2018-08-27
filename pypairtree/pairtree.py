@@ -51,7 +51,7 @@ def isShorty(name):
 def pair_tree_creator(meta_id):
     """Splits string into a pairtree path."""
     chunks = []
-    for x in xrange(0, len(meta_id)):
+    for x in range(0, len(meta_id)):
         if x % 2:
             continue
         if (len(meta_id) - 1) == x:
@@ -79,7 +79,7 @@ def deSanitizeString(name):
         oldString = oldString.replace(r[1], r[0])
     # reverse ascii 0-32 stuff
     # must subtract number added at sanitization
-    for x in xrange(0, 33):
+    for x in range(0, 33):
         oldString = oldString.replace(
             hex(x + sanitizerNum).replace('0x', '^'), chr(x))
     # second pass
@@ -127,7 +127,7 @@ def sanitizeString(name):
     for r in replaceTable:
         newString = newString.replace(r[0], r[1])
     # replace ascii 0-32
-    for x in xrange(0, 33):
+    for x in range(0, 33):
         # must add somewhat arbitrary num to avoid conflict at deSanitization
         # conflict example: is ^x1e supposed to be ^x1 (ascii 1) followed by
         # letter 'e' or really ^x1e (ascii 30)
@@ -154,7 +154,7 @@ def toPairTreePath(name):
     """Cleans a string, and then splits it into a pairtree path."""
     sName = sanitizeString(name)
     chunks = []
-    for x in xrange(0, len(sName)):
+    for x in range(0, len(sName)):
         if x % 2:
             continue
         if (len(sName) - 1) == x:

@@ -33,9 +33,9 @@ def listIDs(basedir):
         for obj in objects:
             doi = os.path.split(obj)[1]
             # print with prefix and original chars in place
-            print prefix + pairtree.deSanitizeString(doi)
+            print(prefix + pairtree.deSanitizeString(doi))
     else:
-        print 'pairtree_root directory not found'
+        print('pairtree_root directory not found')
 
 
 if __name__ == '__main__':
