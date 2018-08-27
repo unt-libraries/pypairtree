@@ -14,7 +14,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='pypairtree',
-    version='1.0.0',
+    version='1.1.0',
     author='University of North Texas Libraries',
     author_email='lauren.ko@unt.edu',
     packages=find_packages(exclude=['tests*']),
@@ -25,8 +25,13 @@ setup(
         'Intended Audience :: System Administrators',
         'Natural Language :: English',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     license='LICENSE',
     description=('Python implementation of Pairtree for storing '
