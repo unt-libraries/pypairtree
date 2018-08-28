@@ -10,3 +10,5 @@ dist/
 
 .tox/
 .coverage
+.pytest_cache
+.cache
