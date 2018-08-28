@@ -5,6 +5,8 @@
 __main__ function allows this to be run from the commandline.
 """
 
+from __future__ import print_function
+
 import os
 import sys
 
