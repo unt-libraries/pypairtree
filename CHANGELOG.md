@@ -4,7 +4,7 @@ Change Log
 1.1.0
 -----
 
-Added support for Python 3.4-3.7. Dropped tests against Python 2.6.
+Added support for Python 3.4-3.6. Dropped tests against Python 2.6.
 
 1.0.0
 -----
