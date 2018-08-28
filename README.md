@@ -1,4 +1,4 @@
-# pypairtree [![Build Status](https://travis-ci.org/unt-libraries/pypairtree.svg)](https://travis-ci.org/unt-libraries/pypairtree)
+# pypairtree [![Build Status](https://travis-ci.org/unt-libraries/pypairtree.svg?branch=master)](https://travis-ci.org/unt-libraries/pypairtree)
 
 pypairtree is a Python implementation of Pairtree for storing objects
 in a filesystem hierarchy that maps object identifiers to two character
