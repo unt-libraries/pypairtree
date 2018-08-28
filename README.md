@@ -6,7 +6,7 @@ directory paths (http://tools.ietf.org/html/draft-kunze-pairtree-01).
 
 ## License
 
-See LICENSE.
+See LICENSE.txt.
 
 ## Acknowledgements
 
@@ -18,6 +18,7 @@ by a number of developers over the years including
 - [Mark Phillips](https://github.com/vphill)
 - [Lauren Ko](https://github.com/ldko)
 - [Joey Liechty](https://github.com/yeahdef)
+- [Gio Gottardi](https://github.com/somexpert)
 
 If you have questions about the project feel free to contact Mark Phillips
 at mark.phillips@unt.edu.
