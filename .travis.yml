@@ -1,3 +1,4 @@
+dist: xenial
 language: python
 sudo: false
 matrix:
@@ -13,6 +14,9 @@ matrix:
 
     - python: 3.6
       env: TOX_ENV=py36,flake8
+
+    - python: 3.7
+      env: TOX_ENV=py37,flake8
 install:
     - pip install tox
 script:
