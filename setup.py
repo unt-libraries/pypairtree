@@ -18,6 +18,7 @@ setup(
     author='University of North Texas Libraries',
     author_email='lauren.ko@unt.edu',
     packages=find_packages(exclude=['tests*']),
+    py_modules=['pypairtree'],
     url='https://github.com/unt-libraries/pypairtree',
     keywords='python pairtree',
     classifiers=[
