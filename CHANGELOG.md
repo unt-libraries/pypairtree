@@ -5,6 +5,9 @@ x.x.x
 -----
 
 * Added Python 3.7 as supported version.
+* Replaced Travis with Github Actions.
+* Added Python 3.8 and 3.9 to testing.
+* Dropped tests against Python 2.7, 3.4, and 3.5.
 
 
 1.1.0
